@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movieapp/models/movie.dart';
 import 'package:movieapp/network/api.dart';
+import 'package:movieapp/pages/detail_page.dart';
 
 class MovieList extends StatefulWidget {
   List<Movie> list;
@@ -36,25 +38,38 @@ class _MovieListState extends State<MovieList> {
                 itemCount: widget.list.length,
                 itemBuilder: (BuildContext context, int index) {
                   Movie m = widget.list[index];
-                  return SizedBox(
-                    width: 125,
-                    height: 230,
-                    child: Card(
-                      child: Column(children: [
-                        SizedBox(
-                          height: 180,
-                          child: Image.network(API.imageURL + m.posterPath),
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.all(4),
-                            child: Text(
-                              m.title,
-                              maxLines: 2,
-                            ))
-                      ]),
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailPage(movie: m)));
+                    },
+                    child: SizedBox(
+                      width: 125,
+                      height: 230,
+                      child: Card(
+                        child: Column(children: [
+                          SizedBox(
+                            height: 180,
+                            child: Hero(
+                              tag: "${m.id}",
+                              child: Image(
+                                  image: CachedNetworkImageProvider(
+                                      API.imageURL + m.posterPath)),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Text(
+                                m.title,
+                                maxLines: 2,
+                              ))
+                        ]),
+                      ),
                     ),
                   );
                 }),
