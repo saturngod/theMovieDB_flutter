@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:movieapp/components/movie_list.dart';
+import 'package:movieapp/controllers/home_controller.dart';
 import 'package:movieapp/models/movie.dart';
 import 'package:movieapp/network/api.dart';
 import 'package:movieapp/pages/search_page.dart';
@@ -12,29 +14,30 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Movie>? popularMovies;
-  List<Movie>? nowPlayingMovies;
-
-  loadPopular() {
-    API().getPopular().then((value) {
-      setState(() {
-        popularMovies = value;
-      });
-    });
-
-    API().getNowPlaying().then((value) {
-      setState(() {
-        nowPlayingMovies = value;
-      });
-    });
-  }
+  // List<Movie>? popularMovies;
+  // List<Movie>? nowPlayingMovies;
+  final HomeController c = Get.put(HomeController());
 
   @override
   void initState() {
     super.initState();
-    loadPopular();
+    c.loadPopular();
+    c.loadNowPlaying();
   }
 
+  Widget _popularList() => c.popularMovies.isEmpty ? 
+          const CircularProgressIndicator() : 
+          MovieList(
+                  list: c.popularMovies,
+                  title: "Popular",
+                );
+
+Widget _nowPlayingList() => c.nowPlayingMovies.isEmpty ? 
+          const CircularProgressIndicator() : 
+          MovieList(
+                  list: c.nowPlayingMovies,
+                  title: "Now Playing",
+                );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,19 +52,13 @@ class _MainPageState extends State<MainPage> {
                 icon: const Icon(Icons.search))
           ],
         ),
-        body: Column(children: [
-          nowPlayingMovies == null
-              ? const Center(child: CircularProgressIndicator())
-              : MovieList(
-                  list: nowPlayingMovies!,
-                  title: "Now Playing",
-                ),
-          popularMovies == null
-              ? const Center(child: CircularProgressIndicator())
-              : MovieList(
-                  list: popularMovies!,
-                  title: "Popular",
-                )
-        ]));
+        body: Obx(() {
+          return Column(children: [
+            _nowPlayingList(),
+            _popularList()
+            ]);
+        })
+        
+        );
   }
 }
