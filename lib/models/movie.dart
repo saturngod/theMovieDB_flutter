@@ -19,14 +19,14 @@ class Movie {
   });
 
   bool adult;
-  String backdropPath;
+  String? backdropPath;
   List<int> genreIds;
   int id;
   String originalLanguage;
   String originalTitle;
   String overview;
   double popularity;
-  String posterPath;
+  String? posterPath;
   DateTime? releaseDate;
   String title;
   bool video;
@@ -47,8 +47,8 @@ class Movie {
         overview: json["overview"],
         popularity: json["popularity"].toDouble(),
         posterPath: json["poster_path"],
-        releaseDate: json["release_date"] == ""
-            ? null
+        releaseDate: json["release_date"] == null || json["release_date"] == ""
+            ? null 
             : DateTime.parse(json["release_date"]),
         title: json["title"],
         video: json["video"],
@@ -58,7 +58,7 @@ class Movie {
 
   Map<String, dynamic> toJson() => {
         "adult": adult,
-        "backdrop_path": backdropPath,
+        "backdrop_path": backdropPath ?? "",
         "genre_ids": List<dynamic>.from(genreIds.map((x) => x)),
         "id": id,
         "original_language": originalLanguage,

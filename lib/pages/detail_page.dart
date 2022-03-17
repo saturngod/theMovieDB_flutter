@@ -3,13 +3,16 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movieapp/components/blur_background.dart';
+import 'package:movieapp/components/cast_pic.dart';
+import 'package:movieapp/components/poster.dart';
 import 'package:movieapp/models/cast.dart';
 import 'package:movieapp/models/movie.dart';
 import 'package:movieapp/network/api.dart';
 
 class DetailPage extends StatefulWidget {
   Movie movie;
-  DetailPage({Key? key, required this.movie}) : super(key: key);
+  String heroTag = "";
+  DetailPage({Key? key, required this.movie, required this.heroTag}) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -35,17 +38,12 @@ class _DetailPageState extends State<DetailPage> {
         physics: const BouncingScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
           Cast c = casts![index];
-          print(c.profilePath);
+          
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                c.profilePath == null
-                    ? Container()
-                    : CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                            API.imageURL + c.profilePath!),
-                      ),
+                CastPic(profilePath: c.profilePath),
                 const SizedBox(
                   width: 12,
                 ),
@@ -54,11 +52,11 @@ class _DetailPageState extends State<DetailPage> {
                   children: [
                     Text(
                       c.originalName,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                     Text(
                       c.character,
-                      style: TextStyle(color: Colors.white24),
+                      style: const TextStyle(color: Colors.white24),
                     ),
                   ],
                 )
@@ -70,10 +68,8 @@ class _DetailPageState extends State<DetailPage> {
   _movieInformation() => Column(
         children: [
           Hero(
-              tag: "${widget.movie.id}",
-              child: Image(
-                  image: CachedNetworkImageProvider(
-                      API.imageURL + widget.movie.posterPath))),
+              tag: widget.heroTag,
+              child: Poster(posterPath: widget.movie.posterPath)),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(widget.movie.title,
@@ -100,14 +96,14 @@ class _DetailPageState extends State<DetailPage> {
         appBar: AppBar(title: Text(widget.movie.title)),
         body: Stack(
           children: [
-            BlurBackground(
-              backdropPath: widget.movie.backdropPath,
-            ),
+            widget.movie.backdropPath != null ? BlurBackground(
+              backdropPath: widget.movie.backdropPath!,
+            ) : Container(),
             SingleChildScrollView(
               child: Column(
                 children: [
                   _movieInformation(),
-                  SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
                   casts == null

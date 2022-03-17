@@ -18,24 +18,32 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: TextField(
-        style: const TextStyle(
-          color: Colors.white,
-        ),
+          title: SizedBox(
+            height: 44,
+            child: TextField(
+        
         textInputAction: TextInputAction.search,
         onSubmitted: (value) {
-          movieAPI.getSearch(value).then((value) {
-            setState(() {
-              result = value;
-              print(result!.length);
+            movieAPI.getSearch(value).then((value) {
+              setState(() {
+                result = value;
+                
+              });
             });
-          });
         },
-        decoration: const InputDecoration(
-            hintStyle: TextStyle(color: Colors.white), hintText: "Search"),
-      )),
+        decoration:  InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(40.0),
+               borderSide: BorderSide.none,
+            ),
+            fillColor: Colors.white,
+            filled: true,
+              hintStyle: TextStyle(color: Colors.grey), 
+              hintText: "Search"),
+      ),
+          )),
       body: result == null
-          ? Text("Please Search First")
+          ? const Text("Please Search First")
           : SearchList(list: result!),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:movieapp/components/poster.dart';
 import 'package:movieapp/models/movie.dart';
 import 'package:movieapp/network/api.dart';
 import 'package:movieapp/pages/detail_page.dart';
@@ -38,35 +39,39 @@ class _MovieListState extends State<MovieList> {
                 itemCount: widget.list.length,
                 itemBuilder: (BuildContext context, int index) {
                   Movie m = widget.list[index];
+
+                  
                   return InkWell(
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DetailPage(movie: m)));
+                              builder: (context) => DetailPage(movie: m,heroTag: "${m.id}" + widget.title,)));
                     },
                     child: SizedBox(
                       width: 125,
                       height: 230,
                       child: Card(
-                        child: Column(children: [
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
                           SizedBox(
-                            height: 180,
+                            width: 125,
                             child: Hero(
-                              tag: "${m.id}",
-                              child: Image(
-                                  image: CachedNetworkImageProvider(
-                                      API.imageURL + m.posterPath)),
+                              tag: "${m.id}" + widget.title,
+                              child: Poster(posterPath: m.posterPath),
                             ),
                           ),
                           const SizedBox(
                             height: 4,
                           ),
                           Padding(
+                            
                               padding: const EdgeInsets.all(4),
                               child: Text(
                                 m.title,
                                 maxLines: 2,
+                                textAlign: TextAlign.center,
                               ))
                         ]),
                       ),
